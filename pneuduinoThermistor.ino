@@ -48,23 +48,27 @@ PneuDuino air = PneuDuino();
 /* sample code: http://playground.arduino.cc/ComponentLib/Thermistor */
 
 void setup() {
-  pinMode(13, OUTPUT);
+  pinMode(13, OUTPUT); //sets pin 13 as output
   Serial.begin(9600);
   air.begin(); // initialize the pneuDuino library. DON'T MOVE THIS!
-  time = millis();
+  time = millis(); //the number of milliseconds since the Arduino board began running the current program
   Serial.println("Ready!")
   
 }
 
 void loop() {
   air.update(); // update the pneuduino library. DONT MOVE THIS!
-  int therm;   
-  therm=analogRead(THERM_PIN)-238;
-  therm=pgm_read_word(&temps[therm]);
+  
 
   Serial.println(therm, DEC);
+  //add checks for the thermometer temp. 
 
-  if (millis() - time >1000){ //check every second  
+  if (millis() - time >10000){ //check every 10 seconds
+    //or take out of if and use delay(10000); 
     time=millis();
+    int therm;   
+    therm=analogRead(THERM_PIN)-238; //subtract 238 from ADC reading to start at 0*C
+    //the thermistors we have may not read below 0*C... what should we do???
+    therm=pgm_read_word(&temps[therm]);
   }
 }
